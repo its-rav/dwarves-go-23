@@ -5,22 +5,37 @@ import (
 	"os"
 )
 
-var countryFormatMap = map[string]map[string]string{
-	"US": {
-		"format":            "%[1]s %[2]s %[3]s",
-		"withoutMiddleName": "%[1]s %[2]s",
-	},
-	"VI": {
-		"format":            "%[2]s %[3]s %[1]s ",
-		"withoutMiddleName": "%[2]s %[1]s",
-	},
+var validCountryCodes = []string{"US", "VI"}
+
+func getCountryNameFormat(countryCode string) string {
+	switch countryCode {
+	case "US":
+		return "%[1]s %[2]s %[3]s"
+	case "VI":
+		return "%[2]s %[3]s %[1]s"
+	default:
+		return "%[1]s %[2]s %[3]s"
+	}
+}
+
+func getCountryNameFormatWithoutMiddleName(countryCode string) string {
+	switch countryCode {
+	case "US":
+		return "%[1]s %[2]s"
+	case "VI":
+		return "%[2]s %[1]s"
+	default:
+		return "%[1]s %[2]s"
+	}
 }
 
 func reorderName(firstName string, lastName string, middleName string, countryCode string) string {
-	format := countryFormatMap[countryCode]["withoutMiddleName"]
+	format := ""
 
 	if middleName != "" {
-		format = countryFormatMap[countryCode]["format"]
+		format = getCountryNameFormat(countryCode)
+	} else {
+		format = getCountryNameFormatWithoutMiddleName(countryCode)
 	}
 
 	return fmt.Sprintf(format, firstName, lastName, middleName)
@@ -35,9 +50,13 @@ func validateName(firstName string, lastName string, middleName string) bool {
 }
 
 func isCountryCodeValid(countryCode string) bool {
-	_, ok := countryFormatMap[countryCode]
+	for _, code := range validCountryCodes {
+		if code == countryCode {
+			return true
+		}
+	}
 
-	return ok
+	return false
 }
 
 // func parseArgs() (firstName string, lastName string, middleName string, countryCode string) {
