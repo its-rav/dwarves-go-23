@@ -80,8 +80,6 @@ func main() {
 
 	fmt.Printf("firstName: %s, lastName: %s, middleName: %s, countryCode: %s\n", firstName, lastName, middleName, countryCode)
 
-	// check if country code is valid
-
 	if !isCountryCodeValid(countryCode) {
 		fmt.Println("Invalid country code")
 		return
